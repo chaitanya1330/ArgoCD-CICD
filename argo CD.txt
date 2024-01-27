@@ -1,0 +1,14 @@
+INSTALLATION:
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+
+we should change the service of argo cd server to access through internet nodeport
+kubectl edit svc <svcname> -n argocd
+
+user : admin
+password is : 86ni-A9fWRZoqEzI
+
+
+github token for jenkins creds :
+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
