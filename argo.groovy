@@ -20,27 +20,27 @@ pipeline {
         }   
 
         
-        // stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             
-        //     steps {
-        //         script {
-        //             def scannerHome = tool 'sonar-qube'
-        //             withSonarQubeEnv('sonar-server') {
-        //                 // Run the SonarQube Scanner with project key and authentication token
-        //                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.login=sqp_6b5e8f3c7fbea2004a8d59b27baad19c284b1245 -Dsonar.projectKey=new_chatapp"
-        //             }
-        //         }
-        //     }
-        // }
+            steps {
+                script {
+                    def scannerHome = tool 'sonar-qube'
+                    withSonarQubeEnv('sonar-server') {
+                        // Run the SonarQube Scanner with project key and authentication token
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.login=sqp_6b5e8f3c7fbea2004a8d59b27baad19c284b1245 -Dsonar.projectKey=new_chatapp"
+                    }
+                }
+            }
+        }
         
-        // stage("Quality Gate") {
+        stage("Quality Gate") {
            
-        //     steps {
-        //       timeout(time: 1, unit: 'HOURS') {
-        //         waitForQualityGate abortPipeline: true
-        //       }
-        //     }
-        // }
+            steps {
+              timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+              }
+            }
+        }
 
 
          stage('Logging into AWS ECR') {
@@ -119,38 +119,38 @@ pipeline {
 
 // #-----------------------------------------------------------------------------------------------------------------------------------
         
-        // stage('Checkout K8S manifest SCM'){
-        //     steps {
-        //         git credentialsId: 'GitHub', 
-        //         url: 'git@github.com:chaitanya1330/new_chatapp.git',
-        //         branch: 'master'
-        //     }
-        // }
+        stage('Checkout K8S manifest SCM'){
+            steps {
+                git credentialsId: 'GitHub', 
+                url: 'git@github.com:chaitanya1330/new_chatapp.git',
+                branch: 'master'
+            }
+        }
 
 
-    //     stage('Update Kubernetes Manifest and Push to Git') {
-    //         steps {
-    //             script {
-    //                 withCredentials([usernamePassword(credentialsId: 'GitHub', passwordVariable: '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', usernameVariable: 'chaitanya chaitu')]) {
-    //                     // Updated the Kubernetes manifest file with the new image tag
-    //                     sh """
-    //                     cat backend.yml
-    //                     sed 's|image: REPLACE_ME|image: ${REPOSITORY_URL}:${IMAGE_TAG}|' backend.yml > argo-manifests/backend.yml.tmp
-    //                     mv argo-manifests/backend.yml.tmp argo-manifests/backend.yml
-    //                     cat argo-manifests/backend.yml
-    //                     git add .
-    //                     git commit -m 'Updated Kubernetes manifest with new image tag | Jenkins Pipeline'
+        stage('Update Kubernetes Manifest and Push to Git') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'GitHub', passwordVariable: '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', usernameVariable: 'chaitanya chaitu')]) {
+                        // Updated the Kubernetes manifest file with the new image tag
+                        sh """
+                        cat backend.yml
+                        sed 's|image: REPLACE_ME|image: ${REPOSITORY_URL}:${IMAGE_TAG}|' backend.yml > argo-manifests/backend.yml.tmp
+                        mv argo-manifests/backend.yml.tmp argo-manifests/backend.yml
+                        cat argo-manifests/backend.yml
+                        git add .
+                        git commit -m 'Updated Kubernetes manifest with new image tag | Jenkins Pipeline'
         
-    //                     # Set Git username and email
-    //                     git config user.email 'chaitanyavantaku@gmail.com'
-    //                     git config user.name 'chaitanya chaitu'
-    //                     git remote -v
-    //                     git remote set-url origin git@github.com:chaitanya1330/new_chatapp.git
-    //                     git push -u origin HEAD:master
-    //                     """
-    //                 }
-    //             }
-    //         }
-    //     }
+                        # Set Git username and email
+                        git config user.email 'chaitanyavantaku@gmail.com'
+                        git config user.name 'chaitanya chaitu'
+                        git remote -v
+                        git remote set-url origin git@github.com:chaitanya1330/new_chatapp.git
+                        git push -u origin HEAD:master
+                        """
+                    }
+                }
+            }
+        }
     }
 }
